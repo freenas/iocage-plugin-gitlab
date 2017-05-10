@@ -7,8 +7,8 @@ sysrc -f /etc/rc.conf redis_enable=YES
 sysrc -f /etc/rc.conf nginx_enable=YES
 
 # Start the service
-service postgresql initdb 2>/dev/null
-service postgresql start 2>/dev/null
+service postgresql initdb
+service postgresql start
 
 USER="gitlab"
 DB="gitlab"
@@ -45,5 +45,5 @@ service redis start
 # Add git user to redis group
 pw groupmod redis -m git
 
-service gitlab start 2>/dev/null
-service nginx start 2>/dev/null
+service gitlab start
+service nginx start
