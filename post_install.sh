@@ -46,7 +46,7 @@ pw groupmod redis -m git
 ln -s /home /usr/home
 
 # Set git users home to /home/git
-pw usermod git -d /home/git
+pw usermod git -d /usr/home/git
 
 # Configure Git global settings for git user
 # 'autocrlf' is needed for the web editor
@@ -58,7 +58,9 @@ git config --global gc.auto 0
 # Enable packfile bitmaps
 git config --global repack.writeBitmaps true
 
+echo "Starting nginx..."
 service nginx start
+echo "Starting gitlab..."
 service gitlab start
 
 echo "Database Name: $DB"
