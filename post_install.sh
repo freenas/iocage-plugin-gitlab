@@ -26,11 +26,11 @@ psql -d template1 -U pgsql -c "CREATE USER ${USER} CREATEDB SUPERUSER;"
 # Create the GitLab production database & grant all privileges on database
 psql -d template1 -U pgsql -c "CREATE DATABASE ${DB} OWNER ${USER};"
 
+# Set a password on the postgres account
+psql -d template1 -U pgsql -c "ALTER USER ${USER} WITH PASSWORD '${PASS}';"
+
 # Connect as superuser to gitlab db and enable pg_trgm extension
 psql -U pgsql -d ${DB} -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
-
-# Set a password on the postgres account
-psql -U pgsql -c "ALTER USER pgsql WITH PASSWORD '${PASS}';"
 
 # Enable Redis socket
 echo 'unixsocket /var/run/redis/redis.sock' >> /usr/local/etc/redis.conf
