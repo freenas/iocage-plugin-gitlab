@@ -48,6 +48,10 @@ ln -s /home /usr/home
 # Set git users home to /home/git
 pw usermod git -d /usr/home/git
 
+# Set some permissions for git user
+chown -R git:git /usr/local/share/gitlab-shell
+chown -R git:git /usr/local/www/gitlab
+
 # Configure Git global settings for git user
 # 'autocrlf' is needed for the web editor
 git config --global core.autocrlf input
