@@ -48,6 +48,11 @@ mv /home /usr
 # Set git users home to /home/git
 pw usermod git -d /usr/home/git
 
+# Precompile the assets
+cd /usr/local/www/gitlab
+echo "yes" | rake gitlab:setup RAILS_ENV=production
+rake assets:precompile RAILS_ENV=production
+
 # Set some permissions for git user
 chown -R git:git /usr/local/share/gitlab-shell
 chown -R git:git /usr/local/www/gitlab
