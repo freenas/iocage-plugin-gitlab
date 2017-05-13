@@ -48,6 +48,9 @@ mv /home /usr
 # Set git users home to /home/git
 pw usermod git -d /usr/home/git
 
+# Set the hostname for gitlab instance
+# sed -i '' "s|host: localhost|host: ${IOCAGE_PLUGIN_IP}|g" /usr/local/www/gitlab/config/gitlab.yml
+
 # Precompile the assets
 cd /usr/local/www/gitlab
 echo "yes" | rake gitlab:setup RAILS_ENV=production
