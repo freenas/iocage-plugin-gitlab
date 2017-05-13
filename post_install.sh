@@ -42,8 +42,8 @@ echo 'unixsocketperm 770' >> /usr/local/etc/redis.conf
 service redis start
 pw groupmod redis -m git
 
-# Fix missing symlink
-ln -s /home /usr/home
+# gitlab *really* wants things in /usr/home
+mv /home /usr
 
 # Set git users home to /home/git
 pw usermod git -d /usr/home/git
