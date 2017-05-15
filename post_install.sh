@@ -49,7 +49,9 @@ mv /home /usr
 pw usermod git -d /usr/home/git
 
 # Set the hostname for gitlab instance
-# sed -i '' "s|host: localhost|host: ${IOCAGE_PLUGIN_IP}|g" /usr/local/www/gitlab/config/gitlab.yml
+if [ -n "$IOCAGE_PLUGIN_IP" ] ; then
+  sed -i '' "s|host: localhost|host: ${IOCAGE_PLUGIN_IP}|g" /usr/local/www/gitlab/config/gitlab.yml
+fi
 
 # Precompile the assets
 cd /usr/local/www/gitlab
