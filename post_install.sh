@@ -43,7 +43,7 @@ service redis start
 pw groupmod redis -m git
 
 # gitlab *really* wants things in /usr/home
-mv /home /usr
+mkdir /usr/home
 
 # Set git users home to /home/git
 pw usermod git -d /usr/home/git
