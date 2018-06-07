@@ -72,7 +72,7 @@ chown -R git:git /usr/local/www/gitlab
 rm Gemfile.lock
 
 # Run database migrations
-su -l git -c "cd /usr/local/www/gitlab && rake db:migrate RAILS_ENV=production"
+su -l git -c "cd /usr/local/www/gitlab && rake gitlab:setup RAILS_ENV=production"
 
 # Compile GetText PO files
 su -l git -c "cd /usr/local/www/gitlab && rake gettext:compile RAILS_ENV=production"
@@ -104,7 +104,7 @@ service nginx start
 echo "Starting gitlab..."
 service gitlab start
 echo "Starting gltlab pages..."
-service gitlab_pages
+service gitlab_pages start
 
 echo "Database Name: $DB"
 echo "Database User: $USER"
