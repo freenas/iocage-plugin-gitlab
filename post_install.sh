@@ -32,6 +32,13 @@ psql -d template1 -U pgsql -c "ALTER USER ${USER} WITH PASSWORD '${PASS}';"
 # Connect as superuser to gitlab db and enable pg_trgm extension
 psql -U pgsql -d ${DB} -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
 
+# Fix permission for postgres sql
+echo "listen_addresses = '*'" >> /usr/local/pgsql/data/postgresql.conf
+echo "host  all  all 0.0.0.0/0 md5" >> /usr/local/pgsql/data/pg_hba.conf
+
+# Restart postgresql after config change
+service postgresql restart
+
 # Enable Redis socket
 echo 'unixsocket /var/run/redis/redis.sock' >> /usr/local/etc/redis.conf
 
