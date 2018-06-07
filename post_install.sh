@@ -72,7 +72,7 @@ chown -R git:git /usr/local/www/gitlab
 rm Gemfile.lock
 
 # Run database migrations
-su -l git -c "cd /usr/local/www/gitlab && rake gitlab:setup RAILS_ENV=production"
+su -l git -c "cd /usr/local/www/gitlab && echo "yes" | rake gitlab:setup RAILS_ENV=production"
 
 # Compile GetText PO files
 su -l git -c "cd /usr/local/www/gitlab && rake gettext:compile RAILS_ENV=production"
