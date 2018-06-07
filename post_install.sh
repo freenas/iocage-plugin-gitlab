@@ -2,6 +2,7 @@
 
 # Enable the service
 sysrc -f /etc/rc.conf gitlab_enable=YES
+sysrc -f /etc/rc.conf gitlab_pages_enable="YES"
 sysrc -f /etc/rc.conf postgresql_enable="YES"
 sysrc -f /etc/rc.conf redis_enable=YES
 sysrc -f /etc/rc.conf nginx_enable=YES
@@ -63,24 +64,40 @@ fi
 # Set db password for gitlab
 sed -i '' "s|secure password|${PASS}|g" /usr/local/www/gitlab/config/database.yml
 
-# Precompile the assets
-cd /usr/local/www/gitlab
-echo "yes" | rake gitlab:setup RAILS_ENV=production
-rake assets:precompile RAILS_ENV=production
-
 # Set some permissions for git user
 chown -R git:git /usr/local/share/gitlab-shell
 chown -R git:git /usr/local/www/gitlab
 
+# remove the old Gemfile.lock to avoid problems with new gems
+rm Gemfile.lock
+
+# Run database migrations
+su -l git -c "cd /usr/local/www/gitlab && rake db:migrate RAILS_ENV=production"
+
+# Compile GetText PO files
+su -l git -c "cd /usr/local/www/gitlab && rake gettext:compile RAILS_ENV=production"
+
+# Update node dependencies and recompile assets
+su -l git -c "cd /usr/local/www/gitlab && rake yarn:install gitlab:assets:clean gitlab:assets:compile RAILS_ENV=production NODE_ENV=production"
+
+# Clean up cache
+su -l git -c "cd /usr/local/www/gitlab && rake cache:clear RAILS_ENV=production"
+
+# Enable push options
+su -l git -c "git config --global receive.advertisePushOptions true"
+
 # Configure Git global settings for git user
 # 'autocrlf' is needed for the web editor
-git config --global core.autocrlf input
+su -l git -c "git config --global core.autocrlf input"
 
 # Disable 'git gc --auto' because GitLab already runs 'git gc' when needed
-git config --global gc.auto 0
+su -l git -c "git config --global gc.auto 0"
 
 # Enable packfile bitmaps
-git config --global repack.writeBitmaps true
+su -l git -c "git config --global repack.writeBitmaps true"
+
+# Start nginx as user git otherwise gitlab-workhores have a permission denied (workaround for now)
+echo "user git;" >>/usr/local/etc/nginx/ngnix.conf
 
 echo "Starting nginx..."
 service nginx start
