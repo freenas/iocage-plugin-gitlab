@@ -32,7 +32,7 @@ psql -d template1 -U pgsql -c "ALTER USER ${USER} WITH PASSWORD '${PASS}';"
 # Connect as superuser to gitlab db and enable pg_trgm extension
 psql -U pgsql -d ${DB} -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
 
-# Fix permission for postgres sql
+# Fix permission for postgres 
 echo "listen_addresses = '*'" >> /usr/local/pgsql/data/postgresql.conf
 echo "host  all  all 0.0.0.0/0 md5" >> /usr/local/pgsql/data/pg_hba.conf
 
@@ -59,6 +59,9 @@ pw usermod git -d /usr/home/git
 if [ -n "$IOCAGE_PLUGIN_IP" ] ; then
   sed -i '' "s|host: localhost|host: ${IOCAGE_PLUGIN_IP}|g" /usr/local/www/gitlab/config/gitlab.yml
 fi
+
+# Set db password for gitlab
+sed -i '' "s|secure password|${PASS}|g" /usr/local/www/gitlab/config/database.yml
 
 # Precompile the assets
 cd /usr/local/www/gitlab
