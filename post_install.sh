@@ -110,4 +110,4 @@ service gitlab start
 echo "Database Name: $DB"
 echo "Database User: $USER"
 echo "Database Password: $PASS"
-
+echo "Please open the URL to set your password, Login Name is root."
