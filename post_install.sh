@@ -96,6 +96,9 @@ su -l git -c "git config --global gc.auto 0"
 # Enable packfile bitmaps
 su -l git -c "git config --global repack.writeBitmaps true"
 
+# We need also give git permission to gitlab-shell
+chown -R git:git /var/log/gitlab-shell/
+
 # Start nginx as user git otherwise gitlab-workhores have a permission denied (workaround for now)
 echo "user git;" >>/usr/local/etc/nginx/ngnix.conf
 
