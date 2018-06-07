@@ -99,13 +99,12 @@ su -l git -c "git config --global repack.writeBitmaps true"
 # We need also give git permission to gitlab-shell
 chown -R git:git /var/log/gitlab-shell/
 
-# Start nginx as user git otherwise gitlab-workhores have a permission denied (workaround for now)
-echo "user git;" >>/usr/local/etc/nginx/ngnix.conf
-
 echo "Starting nginx..."
 service nginx start
 echo "Starting gitlab..."
 service gitlab start
+echo "Starting gltlab pages..."
+service gitlab_pages
 
 echo "Database Name: $DB"
 echo "Database User: $USER"
