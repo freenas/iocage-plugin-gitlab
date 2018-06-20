@@ -6,6 +6,7 @@ sysrc -f /etc/rc.conf gitlab_pages_enable="YES"
 sysrc -f /etc/rc.conf postgresql_enable="YES"
 sysrc -f /etc/rc.conf redis_enable=YES
 sysrc -f /etc/rc.conf nginx_enable=YES
+sysrc -f /etc/rc.conf sshd_enable=YES
 
 # Start the service
 service postgresql initdb
@@ -56,6 +57,9 @@ mkdir -p /usr/home/git
 # Set git users home to /home/git
 pw usermod git -d /usr/home/git
 
+# Make sure the .ssh dir exists
+su -l git -c "mkdir -p /usr/home/git/.ssh"
+
 # Set the hostname for gitlab instance
 if [ -n "$IOCAGE_PLUGIN_IP" ] ; then
   sed -i '' "s|host: localhost|host: ${IOCAGE_PLUGIN_IP}|g" /usr/local/www/gitlab/config/gitlab.yml
@@ -105,6 +109,8 @@ echo "Starting gitlab..."
 service gitlab start
 echo "Starting gltlab pages..."
 service gitlab_pages start
+echo "Starting sshd..."
+service sshd start
 
 echo "Database Name: $DB"
 echo "Database User: $USER"
