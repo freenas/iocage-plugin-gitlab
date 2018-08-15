@@ -17,7 +17,7 @@
 ## See installation.md#using-https for additional HTTPS configuration details.
 
 upstream gitlab-workhorse {
-  server unix:/usr/local/www/gitlab/tmp/sockets/gitlab-workhorse.socket fail_timeout=0;
+  server unix:/usr/local/www/gitlab-ce/tmp/sockets/gitlab-workhorse.socket fail_timeout=0;
 }
 
 map $http_upgrade $connection_upgrade_gitlab {
@@ -70,7 +70,7 @@ server {
   error_page 502 /502.html;
   error_page 503 /503.html;
   location ~ ^/(404|422|500|502|503)\.html$ {
-    root /usr/local/www/gitlab/public;
+    root /usr/local/www/gitlab-ce/public;
     internal;
   }
 
