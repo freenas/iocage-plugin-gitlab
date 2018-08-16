@@ -62,30 +62,30 @@ su -l git -c "mkdir -p /usr/home/git/.ssh"
 
 # Set the hostname for gitlab instance
 if [ -n "$IOCAGE_PLUGIN_IP" ] ; then
-  sed -i '' "s|host: localhost|host: ${IOCAGE_PLUGIN_IP}|g" /usr/local/www/gitlab/config/gitlab.yml
+  sed -i '' "s|host: localhost|host: ${IOCAGE_PLUGIN_IP}|g" /usr/local/www/gitlab-ce/config/gitlab.yml
 fi
 
 # Set db password for gitlab
-sed -i '' "s|secure password|${PASS}|g" /usr/local/www/gitlab/config/database.yml
+sed -i '' "s|secure password|${PASS}|g" /usr/local/www/gitlab-ce/config/database.yml
 
 # Set some permissions for git user
 chown -R git:git /usr/local/share/gitlab-shell
-chown -R git:git /usr/local/www/gitlab
+chown -R git:git /usr/local/www/gitlab-ce
 
 # remove the old Gemfile.lock to avoid problems with new gems
 rm Gemfile.lock
 
 # Run database migrations
-su -l git -c "cd /usr/local/www/gitlab && echo "yes" | rake gitlab:setup RAILS_ENV=production"
+su -l git -c "cd /usr/local/www/gitlab-ce && echo "yes" | rake gitlab:setup RAILS_ENV=production"
 
 # Compile GetText PO files
-su -l git -c "cd /usr/local/www/gitlab && rake gettext:compile RAILS_ENV=production"
+su -l git -c "cd /usr/local/www/gitlab-ce && rake gettext:compile RAILS_ENV=production"
 
 # Update node dependencies and recompile assets
-su -l git -c "cd /usr/local/www/gitlab && rake yarn:install gitlab:assets:clean gitlab:assets:compile RAILS_ENV=production NODE_ENV=production"
+su -l git -c "cd /usr/local/www/gitlab-ce && rake yarn:install gitlab:assets:clean gitlab:assets:compile RAILS_ENV=production NODE_ENV=production"
 
 # Clean up cache
-su -l git -c "cd /usr/local/www/gitlab && rake cache:clear RAILS_ENV=production"
+su -l git -c "cd /usr/local/www/gitlab-ce && rake cache:clear RAILS_ENV=production"
 
 # Enable push options
 su -l git -c "git config --global receive.advertisePushOptions true"
