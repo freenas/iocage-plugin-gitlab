@@ -51,14 +51,14 @@ echo 'unixsocketperm 770' >> /usr/local/etc/redis.conf
 service redis start
 pw groupmod redis -m git
 
-# gitlab *really* wants things in /usr/home
-mkdir -p /usr/home/git
+# gitlab *really* wants things in /usr/local
+mkdir -p /usr/local/git
 
-# Set git users home to /home/git
-pw usermod git -d /usr/home/git
+# Set git users home to /local/git
+pw usermod git -d /usr/local/git
 
 # Make sure the .ssh dir exists
-su -l git -c "mkdir -p /usr/home/git/.ssh"
+su -l git -c "mkdir -p /usr/local/git/.ssh"
 
 # Set the hostname for gitlab instance
 if [ -n "$IOCAGE_PLUGIN_IP" ] ; then
