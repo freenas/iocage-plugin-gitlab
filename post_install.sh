@@ -60,6 +60,12 @@ pw usermod git -d /usr/local/git
 # Make sure the .ssh dir exists
 su -l git -c "mkdir -p /usr/local/git/.ssh"
 
+# Make sure repositories directory exists with correct permissions
+su -l git -c "mkdir -p /usr/local/git/repositories"
+chown git /usr/local/git/repositories
+chgrp git /usr/local/git/repositories
+chmod 2770 /usr/local/git/repositories
+
 # Set the hostname for gitlab instance
 if [ -n "$IOCAGE_PLUGIN_IP" ] ; then
   sed -i '' "s|host: localhost|host: ${IOCAGE_PLUGIN_IP}|g" /usr/local/www/gitlab-ce/config/gitlab.yml
