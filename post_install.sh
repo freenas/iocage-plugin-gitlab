@@ -38,6 +38,9 @@ psql -U postgres -d ${DB} -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
 echo "listen_addresses = '*'" >> /var/db/postgres/data11/postgresql.conf
 echo "host  all  all 0.0.0.0/0 md5" >> /var/db/postgres/data11/pg_hba.conf
 
+#Remove Superuser rights from database user
+psql -d template1 -U postgres -c "ALTER USER git WITH NOSUPERUSER;"
+
 # Restart postgresql after config change
 service postgresql restart
 
