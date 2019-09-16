@@ -23,20 +23,23 @@ cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1 > /root/dbpasswor
 PASS=`cat /root/dbpassword`
 
 # create user git
-psql -d template1 -U pgsql -c "CREATE USER ${USER} CREATEDB SUPERUSER;"
+psql -d template1 -U postgres -c "CREATE USER ${USER} CREATEDB SUPERUSER;"
 
 # Create the GitLab production database & grant all privileges on database
-psql -d template1 -U pgsql -c "CREATE DATABASE ${DB} OWNER ${USER};"
+psql -d template1 -U postgres -c "CREATE DATABASE ${DB} OWNER ${USER};"
 
 # Set a password on the postgres account
-psql -d template1 -U pgsql -c "ALTER USER ${USER} WITH PASSWORD '${PASS}';"
+psql -d template1 -U postgres -c "ALTER USER ${USER} WITH PASSWORD '${PASS}';"
 
 # Connect as superuser to gitlab db and enable pg_trgm extension
-psql -U pgsql -d ${DB} -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
+psql -U postgres -d ${DB} -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
 
 # Fix permission for postgres 
-echo "listen_addresses = '*'" >> /usr/local/pgsql/data/postgresql.conf
-echo "host  all  all 0.0.0.0/0 md5" >> /usr/local/pgsql/data/pg_hba.conf
+echo "listen_addresses = '*'" >> /var/db/postgres/data11/postgresql.conf
+echo "host  all  all 0.0.0.0/0 md5" >> /var/db/postgres/data11/pg_hba.conf
+
+#Remove Superuser rights from database user
+psql -d template1 -U postgres -c "ALTER USER git WITH NOSUPERUSER;"
 
 # Restart postgresql after config change
 service postgresql restart
@@ -87,8 +90,9 @@ su -l git -c "cd /usr/local/www/gitlab-ce && echo "yes" | rake gitlab:setup RAIL
 # Compile GetText PO files
 su -l git -c "cd /usr/local/www/gitlab-ce && rake gettext:compile RAILS_ENV=production"
 
-# Update node dependencies and recompile assets
-su -l git -c "cd /usr/local/www/gitlab-ce && rake yarn:install gitlab:assets:clean gitlab:assets:compile RAILS_ENV=production NODE_ENV=production"
+# Install node dependencies and recompile assets
+su -l git -c "cd /usr/local/www/gitlab-ce && yarn install --production --pure-lockfile"
+su -l git -c "cd /usr/local/www/gitlab-ce && rake gitlab:assets:compile RAILS_ENV=production NODE_ENV=production NODE_OPTIONS='--max_old_space_size=4096'"
 
 # Clean up cache
 su -l git -c "cd /usr/local/www/gitlab-ce && rake cache:clear RAILS_ENV=production"
