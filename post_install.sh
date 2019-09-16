@@ -90,8 +90,7 @@ su -l git -c "cd /usr/local/www/gitlab-ce && echo "yes" | rake gitlab:setup RAIL
 # Compile GetText PO files
 su -l git -c "cd /usr/local/www/gitlab-ce && rake gettext:compile RAILS_ENV=production"
 
-# Update node dependencies and recompile assets
-#su -l git -c "cd /usr/local/www/gitlab-ce && rake yarn:install gitlab:assets:clean gitlab:assets:compile RAILS_ENV=production NODE_ENV=production"
+# Install node dependencies and recompile assets
 su -l git -c "cd /usr/local/www/gitlab-ce && yarn install --production --pure-lockfile"
 su -l git -c "cd /usr/local/www/gitlab-ce && rake gitlab:assets:compile RAILS_ENV=production NODE_ENV=production NODE_OPTIONS='--max_old_space_size=4096'"
 
