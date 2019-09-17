@@ -88,7 +88,7 @@ su -l git -c "cd /usr/local/www/gitlab-ce && echo "yes" | rake gitlab:setup RAIL
 su -l git -c "cd /usr/local/www/gitlab-ce && rake gettext:compile RAILS_ENV=production"
 
 #Workaround to fix fetch failers
-su -l git -c "cd /usr/local/www/gitlab-ce && rake yarn:install RAILS_ENV=production NODE_ENV=production"
+su -l git -c "cd /usr/local/www/gitlab-ce && rake yarn:install --har RAILS_ENV=production NODE_ENV=production"
 
 # Update node dependencies and recompile assets
 su -l git -c "cd /usr/local/www/gitlab-ce && rake yarn:install gitlab:assets:clean gitlab:assets:compile RAILS_ENV=production NODE_ENV=production"
