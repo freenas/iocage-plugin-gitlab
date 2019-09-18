@@ -121,7 +121,7 @@ service gitlab_pages start
 echo "Starting sshd..."
 service sshd start
 
-echo "Database Name: $DB"
-echo "Database User: $USER"
-echo "Database Password: $PASS"
-echo "Please open the URL to set your password, Login Name is root."
+echo "Database Name: $DB" > /root/PLUGIN_INFO
+echo "Database User: $USER" >> /root/PLUGIN_INFO
+echo "Database Password: $PASS" >> /root/PLUGIN_INFO
+echo "Please open the URL to set your password, Login Name is root." >> /root/PLUGIN_INFO
